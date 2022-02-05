@@ -1,10 +1,7 @@
-// import logo from './logo.svg';
-// import './App.css';
 import { Component } from "react";
-import { nanoid } from "nanoid";
 import ContactForm from "./components/ContactForm/ContactForm";
-// import { render } from "@testing-library/react";
-// import Form from './Form/Form';
+import Filter from "./components/Filter/Filter";
+import ContactList from "./components/ContactList/ContactList";
 
 class App extends Component {
   state = {
@@ -33,32 +30,39 @@ class App extends Component {
     filter: "",
   };
 
-  // handleChange = (e) => {
-  //   const { name, value } = e.currentTarget;
-  //   this.setState({ [name]: value });
-  //   console.log(name);
-  //   console.log(value);
-  // };
-
   handleFilter = (e) => {
     const value = e.currentTarget.value;
-    console.log(value);
     this.setState({
       filter: value,
     });
   };
 
-
   stateChange = (newContact) => {
-    this.setState(
-      (prevState) => ({
-        contacts: [
-          ...prevState.contacts,
-          newContact,
-        ],
-      })
-    );
+    const searchName = this.state.contacts
+      .map((contact) => contact.name)
+      .includes(newContact.name);
+
+    if (searchName) {
+      alert(
+        `${newContact.name} is already in contacts.`
+      );
+      return;
+    }
+
+    this.setState((prevState) => ({
+      contacts: [
+        ...prevState.contacts,
+        newContact,
+      ],
+    }));
   };
+
+  deleteListItem = (id) =>
+    this.setState((prev) => ({
+      contacts: prev.contacts.filter(
+        (el) => el.id !== id
+      ),
+    }));
 
   // handleSubmit = (e) => {
   //   e.preventDefault();
@@ -86,25 +90,7 @@ class App extends Component {
     //const contacts = this.state.contacts;
     //const name = this.state.name;
     //то же самое
-    const { contacts, name, number, filter } =
-      this.state;
-    const contactElements = contacts.map(
-      (contact) =>
-        contact.name
-          .toLowerCase()
-          .includes(filter.toLowerCase()) && (
-          <li key={contact.id}>
-            {contact.name}: {contact.number}
-          </li>
-        )
-    );
-    // const contactElements = contacts.map(
-    //   (contact) => (
-    //     <li key={contact.id}>
-    //       {contact.name}: {contact.number}
-    //     </li>
-    //   )
-    // );
+    const { contacts, filter } = this.state;
 
     return (
       <>
@@ -112,53 +98,19 @@ class App extends Component {
         <ContactForm
           stateChange={this.stateChange}
         />
-        {/* <form onSubmit={this.handleSubmit}>
-          <label>
-            Name
-            <input
-              type="text"
-              name="name"
-              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-              required
-              onChange={this.handleChange}
-              value={name}
-            />
-          </label>
-          <label>
-            Number
-            <input
-              type="tel"
-              name="number"
-              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-              required
-              onChange={this.handleChange}
-              value={number}
-            />
-          </label>
-          <button type="submit">
-            Add contact
-          </button>
-        </form> */}
         <h2>Contacts</h2>
-        <label>
-          Find contacts by name
-          <input
-            type="text"
-            // name="filter"
-            onChange={this.handleFilter}
-            value={filter}
-          />
-        </label>
-        <ul>{contactElements}</ul>
+        <Filter
+          filter={filter}
+          handleFilter={this.handleFilter}
+        />
+        <ContactList
+          contacts={contacts}
+          filter={filter}
+          deleteListItem={this.deleteListItem}
+        />
       </>
     );
   }
 }
 
 export default App;
-
-
-
-

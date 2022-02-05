@@ -14,27 +14,23 @@ class ContactForm extends Component {
         console.log(value);
     };
 
+    resetForm = () => {
+        this.setState({
+            ...this.state,
+            number: '',
+            name: '',
+        });
+    };
+
     handleSubmit = (e) => {
         e.preventDefault();
         const newContact = {
-        name: this.state.name,
-        id: nanoid(),
-        number: this.state.number,
+            name: this.state.name,
+            id: nanoid(),
+            number: this.state.number,
         };
-        // this.setState((prevState) => {
-        //     const { contacts } = prevState;
-        //     const newContacts = [
-        //         ...contacts,
-        //         newContact,
-        //     ];
-        //     // return {
-        //     //     contacts: newContacts,
-        //     //     name: "",
-        //     //     number: "",
-        //     //     filter: "",
-        //     // };
-        // });
         this.props.stateChange(newContact);
+        this.resetForm();
     };
 
     render() {
