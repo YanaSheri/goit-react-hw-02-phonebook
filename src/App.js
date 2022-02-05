@@ -9,55 +9,80 @@ class App extends Component {
   state = {
     contacts: [],
     name: "",
+    number: "",
   };
 
-  handleClick = (e) => {
-    console.log(e.currentTarget.value);
+  handleChange = (e) => {
     const { name, value } = e.currentTarget;
-    console.log(e);
-    console.log(name);
-    console.log(value);
     this.setState({ [name]: value });
   };
 
   handleSubmit = (e) => {
     e.preventDefault();
-      const newContact = {
-        ...this.state,
-        name: this.state.name,
-        id: nanoid(),
+    const newContact = {
+      name: this.state.name,
+      id: nanoid(),
+      number: this.state.number,
+    };
+    this.setState((prevState) => {
+      const { contacts } = prevState;
+      const newContacts = [
+        ...contacts,
+        newContact,
+      ];
+      return {
+        contacts: newContacts,
+        name: "",
+        number: "",
       };
-      console.log(newContact);
-      this.state.contacts.addContact(newContact);
+    });
   };
 
-    addContact = (newContact) => {
-      this.setState((prev) => ({
-        contacts: [...prev.contacts, newContact],
-      }));
-    };
-
   render() {
+    //const contacts = this.state.contacts;
+    //const name = this.state.name;
+    //то же самое
+    const { contacts, name, number } = this.state;
+
+    const contactElements = contacts.map(
+      (contact) => (
+        <li key={contact.id}>{contact.name}: {contact.number }</li>
+      )
+    );
+
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Name
-          <input
-            type="text"
-            name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-            onChange={this.handleClick}
-          />
-        </label>
-        <button
-          type="submit"
-          //   onClick={this.handleClick}
-        >
-          Add contact
-        </button>
-      </form>
+      <>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Name
+            <input
+              type="text"
+              name="name"
+              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+              required
+              onChange={this.handleChange}
+              value={name}
+            />
+            <input
+              type="tel"
+              name="number"
+              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+              required
+              onChange={this.handleChange}
+              value={number}
+            />
+          </label>
+          <button
+            type="submit"
+            //   onClick={this.handleClick}
+          >
+            Add contact
+          </button>
+        </form>
+        <ul>{contactElements}</ul>
+      </>
     );
   }
 }
