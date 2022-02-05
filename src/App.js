@@ -7,7 +7,29 @@ import { nanoid } from "nanoid";
 
 class App extends Component {
   state = {
-    contacts: [],
+    contacts: [
+      {
+        id: "id-1",
+        name: "Rosie Simpson",
+        number: "459-12-56",
+      },
+      {
+        id: "id-2",
+        name: "Hermione Kline",
+        number: "443-89-12",
+      },
+      {
+        id: "id-3",
+        name: "Eden Clements",
+        number: "645-17-79",
+      },
+      {
+        id: "id-4",
+        name: "Annie Copeland",
+        number: "227-91-26",
+      },
+    ],
+    filter: "",
     name: "",
     number: "",
   };
@@ -15,6 +37,16 @@ class App extends Component {
   handleChange = (e) => {
     const { name, value } = e.currentTarget;
     this.setState({ [name]: value });
+    console.log(name);
+    console.log(value);
+  };
+
+  handleFilter = (e) => {
+    const value = e.currentTarget.value;
+    console.log(value);
+    this.setState({
+      filter: value,
+    });
   };
 
   handleSubmit = (e) => {
@@ -34,6 +66,7 @@ class App extends Component {
         contacts: newContacts,
         name: "",
         number: "",
+        filter: "",
       };
     });
   };
@@ -42,16 +75,29 @@ class App extends Component {
     //const contacts = this.state.contacts;
     //const name = this.state.name;
     //то же самое
-    const { contacts, name, number } = this.state;
-
+    const { contacts, name, number, filter } =
+      this.state;
     const contactElements = contacts.map(
-      (contact) => (
-        <li key={contact.id}>{contact.name}: {contact.number }</li>
-      )
+      (contact) =>
+        contact.name
+          .toLowerCase()
+          .includes(filter.toLowerCase()) && (
+          <li key={contact.id}>
+            {contact.name}: {contact.number}
+          </li>
+        )
     );
+    // const contactElements = contacts.map(
+    //   (contact) => (
+    //     <li key={contact.id}>
+    //       {contact.name}: {contact.number}
+    //     </li>
+    //   )
+    // );
 
     return (
       <>
+        <h2>Phonebook</h2>
         <form onSubmit={this.handleSubmit}>
           <label>
             Name
@@ -64,6 +110,9 @@ class App extends Component {
               onChange={this.handleChange}
               value={name}
             />
+          </label>
+          <label>
+            Number
             <input
               type="tel"
               name="number"
@@ -74,13 +123,20 @@ class App extends Component {
               value={number}
             />
           </label>
-          <button
-            type="submit"
-            //   onClick={this.handleClick}
-          >
+          <button type="submit">
             Add contact
           </button>
         </form>
+        <h2>Contacts</h2>
+        <label>
+          Find contacts by name
+          <input
+            type="text"
+            // name="filter"
+            onChange={this.handleFilter}
+            value={filter}
+          />
+        </label>
         <ul>{contactElements}</ul>
       </>
     );
