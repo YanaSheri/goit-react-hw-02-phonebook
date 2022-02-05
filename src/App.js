@@ -2,6 +2,7 @@
 // import './App.css';
 import { Component } from "react";
 import { nanoid } from "nanoid";
+import ContactForm from "./components/ContactForm/ContactForm";
 // import { render } from "@testing-library/react";
 // import Form from './Form/Form';
 
@@ -30,16 +31,14 @@ class App extends Component {
       },
     ],
     filter: "",
-    name: "",
-    number: "",
   };
 
-  handleChange = (e) => {
-    const { name, value } = e.currentTarget;
-    this.setState({ [name]: value });
-    console.log(name);
-    console.log(value);
-  };
+  // handleChange = (e) => {
+  //   const { name, value } = e.currentTarget;
+  //   this.setState({ [name]: value });
+  //   console.log(name);
+  //   console.log(value);
+  // };
 
   handleFilter = (e) => {
     const value = e.currentTarget.value;
@@ -49,27 +48,39 @@ class App extends Component {
     });
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const newContact = {
-      name: this.state.name,
-      id: nanoid(),
-      number: this.state.number,
-    };
-    this.setState((prevState) => {
-      const { contacts } = prevState;
-      const newContacts = [
-        ...contacts,
-        newContact,
-      ];
-      return {
-        contacts: newContacts,
-        name: "",
-        number: "",
-        filter: "",
-      };
-    });
+
+  stateChange = (newContact) => {
+    this.setState(
+      (prevState) => ({
+        contacts: [
+          ...prevState.contacts,
+          newContact,
+        ],
+      })
+    );
   };
+
+  // handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const newContact = {
+  //     name: this.state.name,
+  //     id: nanoid(),
+  //     number: this.state.number,
+  //   };
+  //   this.setState((prevState) => {
+  //     const { contacts } = prevState;
+  //     const newContacts = [
+  //       ...contacts,
+  //       newContact,
+  //     ];
+  //     return {
+  //       contacts: newContacts,
+  //       name: "",
+  //       number: "",
+  //       filter: "",
+  //     };
+  //   });
+  // };
 
   render() {
     //const contacts = this.state.contacts;
@@ -98,7 +109,10 @@ class App extends Component {
     return (
       <>
         <h2>Phonebook</h2>
-        <form onSubmit={this.handleSubmit}>
+        <ContactForm
+          stateChange={this.stateChange}
+        />
+        {/* <form onSubmit={this.handleSubmit}>
           <label>
             Name
             <input
@@ -126,7 +140,7 @@ class App extends Component {
           <button type="submit">
             Add contact
           </button>
-        </form>
+        </form> */}
         <h2>Contacts</h2>
         <label>
           Find contacts by name
